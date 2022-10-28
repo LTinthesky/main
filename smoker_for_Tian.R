@@ -44,7 +44,7 @@ head(resOrdered)
 resOrdered <- res[order(res$pvalue) ,] ## order the gene by pvalue
 head(resOrdered)
 
-sig <- res[!is.na(res$pvalue) & res$pvalue <0.05 &  abs(res$log2FoldChange > 0.4) ,]  ## select important different expression gene
+sig <- res[!is.na(res$pvalue) & res$pvalue <0.05 &  abs(res$log2FoldChange > 1) ,]  ## select important different expression gene
 head(sig)
 
 ##  write results to tab delimited  file
