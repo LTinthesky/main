@@ -1,1 +1,169 @@
 
+###  smoking in different plaque types 
+
+library(limma)
+library(DESeq2)
+library(dplyr)
+#######
+
+#set working directory
+setwd("~/Library/CloudStorage/OneDrive-UMCUtrecht/Tian_Projects/2022_smoking vs. non-smoke_RNA_seq/10-2022_DEseq2_ currentsmoking")
+
+#read in files 
+raw.genecounts = read.table (file = "bulk_RNAseq_raw_counts.txt.minRib.txt.PC.txt",header = T,sep = "\t",row.names = 1)
+
+#correct for UMI saturation the log = ln!!!! no log10 no log2 its natural log
+raw.genecounts=round(-4096*(log(1-(raw.genecounts/4096))))
+
+#check header
+raw.genecounts[1:10,1:10]
+
+#Scale before quantile normalization
+raw.genecounts=t(t(raw.genecounts)/colSums(raw.genecounts))*100000
+
+#quantile normalize
+raw.genecounts=round(limma::normalizeQuantiles(raw.genecounts))
+
+######     import data
+
+metadata <- read.table(file ="characteristic_currentsmoking_clinical_data.txt" ,header = T ,sep = "\t") ## read metadata NOTE sep="\t"
+plaque <- read.table(file = "Seurat_clusters_Michal_v13.txt",header = TRUE ,sep = "\t")
+metadata <- merge(metadata,plaque,by.x = "study_number") 
+metadata <- column_to_rownames(metadata,"study_number") 
+
+###  plaque type 0 ( 200 )
+
+type0 <- metadata[metadata$cluster == "0" , c("sex","age","smokercurrent")]
+type0 <- na.omit(type0)
+raw.genecounts_selcted <- as.data.frame(raw.genecounts[ ,rownames(type0)] ) 
+raw.genecounts_selcted=na.omit(raw.genecounts_selcted)   ## delete the na values 
+
+## t-test and chi-square
+t.test(age~smokercurrent,type0)
+
+chisq.test(type0$smokercurrent,type0$sex)
+
+##  DEG 
+dds <- DESeqDataSetFromMatrix(raw.genecounts_selcted ,type0 , design = ~ age + smokercurrent) 
+
+## remove low expressed gene 
+keep <- rowSums (counts(dds) ) >= 10
+dds <- dds[keep,]
+dds <- DESeq(dds)
+
+res <- results(dds)
+head(res)
+##  MAplot
+plotMA (dds, ylim=c(-1,1))   
+
+resOrdered <- res[order(res$pvalue) ,] ## order the gene by pvalue
+head(resOrdered)
+
+res["CRLF1_ENSG00000006016" ,]
+
+####   plaque type1 
+type1 <- metadata[metadata$cluster == "1" ,c("sex","age","smokercurrent")]
+type1 <- na.omit(type1)
+
+raw.genecounts_selcted <- as.data.frame(raw.genecounts[ ,rownames(type1)] ) 
+raw.genecounts_selcted=na.omit(raw.genecounts_selcted)   ## delete the na values 
+
+## t-test and chi-square
+t.test(age~smokercurrent,type1)
+
+chisq.test(type1$smokercurrent,type1$sex)
+
+
+##  DEG 
+dds <- DESeqDataSetFromMatrix(raw.genecounts_selcted ,type1 , design = ~ age+smokercurrent) 
+
+## remove low expressed gene 
+keep <- rowSums (counts(dds) ) >= 10
+dds <- dds[keep,]
+dds <- DESeq(dds)
+
+res <- results(dds)
+head(res)
+##  MAplot
+plotMA (dds, ylim=c(-1,1)) 
+res["CRLF1_ENSG00000006016" ,]
+
+####   plaque type2
+type2 <- metadata[metadata$cluster == "2" ,c("sex","age","smokercurrent")]
+type2 <- na.omit(type2)
+
+raw.genecounts_selcted <- as.data.frame(raw.genecounts[ ,rownames(type2)] ) 
+raw.genecounts_selcted=na.omit(raw.genecounts_selcted)   ## delete the na values 
+
+## t-test and chi-square
+t.test(age~smokercurrent,type2)
+
+chisq.test(type2$smokercurrent,type2$sex)
+##  DEG 
+dds <- DESeqDataSetFromMatrix(raw.genecounts_selcted ,type2 , design = ~ age+smokercurrent) 
+
+## remove low expressed gene 
+keep <- rowSums (counts(dds) ) >= 10
+dds <- dds[keep,]
+dds <- DESeq(dds)
+
+res <- results(dds)
+head(res)
+##  MAplot
+plotMA (dds, ylim=c(-1,1)) 
+
+res["CRLF1_ENSG00000006016" ,]
+
+####   plaque type3
+type3 <- metadata[metadata$cluster == "3" ,c("sex","age","smokercurrent")]
+type3 <- na.omit(type3)
+
+raw.genecounts_selcted <- as.data.frame(raw.genecounts[ ,rownames(type3)] ) 
+raw.genecounts_selcted=na.omit(raw.genecounts_selcted)   ## delete the na values 
+
+## t-test and chi-square
+t.test(age~smokercurrent,type3)
+chisq.test(type3$smokercurrent,type3$sex)
+
+##  DEG 
+dds <- DESeqDataSetFromMatrix(raw.genecounts_selcted ,type3 , design = ~ age+sex+smokercurrent) 
+
+## remove low expressed gene 
+keep <- rowSums (counts(dds) ) >= 10
+dds <- dds[keep,]
+dds <- DESeq(dds)
+
+res <- results(dds)
+head(res)
+##  MAplot
+plotMA (dds, ylim=c(-1,1)) 
+res["CRLF1_ENSG00000006016" ,]
+
+####   plaque type4
+type4 <- metadata[metadata$cluster == "4" ,c("sex","age","smokercurrent")]
+type4 <- na.omit(type4)
+
+raw.genecounts_selcted <- as.data.frame(raw.genecounts[ ,rownames(type4)] ) 
+raw.genecounts_selcted=na.omit(raw.genecounts_selcted)   ## delete the na values 
+
+## t-test and chi-square
+t.test(age~smokercurrent,type3)
+
+chisq.test(type3$smokercurrent,type3$sex)
+##  DEG 
+dds <- DESeqDataSetFromMatrix(raw.genecounts_selcted ,type4 , design = ~ smokercurrent) 
+
+## remove low expressed gene 
+keep <- rowSums (counts(dds) ) >= 10
+dds <- dds[keep,]
+dds <- DESeq(dds)
+
+res <- results(dds)
+head(res)
+##  MAplot
+plotMA (dds, ylim=c(-1,1)) 
+
+res["CRLF1_ENSG00000006016" ,]
+
+resOrdered <- res[order(res$pvalue) ,] ## order the gene by pvalue
+head(resOrdered)
