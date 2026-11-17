@@ -1,0 +1,4 @@
+PASS spatial scoring against direct Scanpy reference, explicit X, duplicate genes, empty gene set
+PASS raw-count rejection
+Scanpy 1.11.5
+Synthetic fixtures: /private/tmp/spatial_code_checks_bj5yhhg3

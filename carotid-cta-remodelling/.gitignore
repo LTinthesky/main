@@ -1,0 +1,12 @@
+data/*
+!data/README.md
+results/*
+!results/README.md
+.Rhistory
+.RData
+.DS_Store
+__pycache__/
+.Rproj.user/
+renv/library/
+*.pyc
+*.log

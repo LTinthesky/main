@@ -1,0 +1,18 @@
+PASS scripts/01_deseq2_RI_analysis.R 
+PASS scripts/02_concordant_gene_sets.R 
+PASS scripts/03_elastic_net_RNA_RI_score.R 
+PASS scripts/04_elastic_net_robustness.R 
+Excluded metadata rows without matching expression or finite RI: 0
+Removed constant training genes: 1
+PASS input guards, alignment, model round-trip, all settings, constant genes
+Warning: Feature names cannot have underscores ('_'), replacing with dashes ('-')
+Warning: Data is of class matrix. Coercing to dgCMatrix.
+PASS scripts/05_public_scRNA_module_score.R 
+PASS scripts/07_RNA_score_histology_associations.R 
+PASS histology reference GLM, zero events, separation flags
+'select()' returned 1:many mapping between keys and columns
+PASS scripts/01_targeted_myeloid_module_scores.R 
+PASS scripts/02_compare_independent_modules.R 
+PASS bulk scoring and independent-module comparisons
+ALL R SYNTHETIC CHECKS PASSED
+Fixture directory: /private/tmp/research_code_checks_10296680d369e 
